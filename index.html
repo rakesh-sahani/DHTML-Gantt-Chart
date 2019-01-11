@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>Gantt Chart Load and Download</title>
+	<script src="js/dhtmlxgantt.js?v=6.0.4"></script>
+	<script src="js/gantt_api.js?v=6.0.4"></script> 
+    <script src="js/dhtmlxgantt_tooltip.js"></script>
+	<link rel="stylesheet" href="css/dhtmlxgantt.css?v=6.0.4">
+	<style>
+		html, body {
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+		}
+
+/* Gantt CHart Color */
+  .Color {
+			color: #4f9a7b;
+			 font-weight: bold;
+		}
+
+  .Color1 {
+			color: #bbb815;
+			 font-weight: bold;
+		}
+
+  .milestoneColor {
+			color: #A9A9A9;
+			 font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+<input value="Download PDF" type="button" onclick='gantt.exportToPDF()'> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input value="Download PNG" type="button" onclick='gantt.exportToPNG()'>
+<div id="gantt_here" style='width:100%; height:100%;'></div>
+<script>
+	var task = {
+		data: [
+			{
+				id: 1, text: "Project #1",  open: true,color: "#4f9a7b"
+			},
+
+			{
+				id: 2, text: "Task #1", start_date: "02-04-2018",end_date: "05-04-2018",  parent: 1,  open: true,color: "#4f9a7b"
+			},
+{
+				id: 3, text: "Task #1", start_date:  "02-04-2018",end_date: "07-04-2018",  parent: 1,  open: true,color: "#4f9a7b"
+			},
+			{
+				id: 4, text: "Task #2", start_date: "02-04-2018",end_date: "08-04-2018", parent: 2,  open: true,color: "#4f9a7b"
+			}
+,
+            {
+				id: 5, text: "Project #2",  open: true,  open: true,color: "#bbb815"
+			},
+
+			{
+				id: 6, text: "Task #1", start_date: "02-04-2018",end_date: "04-04-2018",  parent: 5,  open: true,color: "#bbb815"
+			}
+
+		]
+	};
+
+
+	var textLabel = [
+				"<div class='gantt-text-label'>"+
+			  
+			  "<span style="+"vertical-align:middle;"+"><b>Work Areas</b></span>" +
+			   "</div>"
+			].join("");
+
+			
+			gantt.config.autofit = true; // Load the Gantt CHart properly in html
+			gantt.config.fit_tasks = true; // Fits the task bar properly
+			gantt.config.grid_width = 600; // Provides the Space width for the Task Column
+			//gantt.config.drag_lightbox = true;
+			gantt.config.scale_height = 30*2;
+			gantt.config.min_column_width = 50;
+
+			gantt.config.scale_unit = "day";
+			gantt.config.subscales = [{ unit:"month", step:1, date:"%M, %Y"	}];
+
+			gantt.config.details_on_dblclick = false; // Disable the Edit Option
+			gantt.templates.task_text=function(start, end, task){return '';}; // Hide Taask Text from bar
+			gantt.config.autosize = true; // Auto Size the Chart
+			gantt.templates.tooltip_text = function(start,end,task){
+			    return "<b>Task:</b> "+task.text+"<br/><b>Start date:</b> " + 
+			    gantt.templates.tooltip_date_format(start)+ 
+			    "<br/><b>End date:</b> "+gantt.templates.tooltip_date_format(end);
+			}; // Applies the Hover Option or ToolTip
+			gantt.config.drag_resize = false; // Disable the Bar resize option
+			gantt.config.drag_mode = false; // Disable the Bar mode option
+			gantt.config.drag_progess = false; // Disable the Bar progress option
+			gantt.config.columns = [{name: "text", label:textLabel,tree: true, width: '*',template: colorFunc}]; // Removes the COlumn or Provides the SPecific Column
+			gantt.init("gantt_here"); // Initialize the Chart on HTML coresponding ID example "id=gantt_here"
+			gantt.parse(task); // Parse or Generate the JSON data on Chart			
+			
+
+			//Color Function Gantt CHart *Rakesh*
+			function colorFunc(task) 
+			{
+				if (task.text == "Project #1")					
+					return "<div class='Color'>"+ task.text	+ "</div>";
+					{
+						if (task.parent == 1 )
+							return "<div class='Color'>"+ task.text	+ "</div>";
+						{
+							
+							if (task.color == "#4f9a7b")
+								return "<div class='Color'>"+ task.text	+ "</div>";								
+						}					
+						
+					}
+					
+					
+					if (task.text == "Project #2")					
+					return "<div class='Color1'>"+ task.text	+ "</div>";
+					{
+						if (task.parent == 5 )
+							return "<div class='Color1'>"+ task.text	+ "</div>";
+						{
+							
+							if (task.color == "#bbb815")
+								return "<div class='Color'>"+ task.text	+ "</div>";								
+						}					
+						
+					}				
+			}
+
+
+</script>
+</body>
